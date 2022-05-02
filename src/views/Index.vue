@@ -3,15 +3,16 @@
      <!-- 天气 -->
             <div class="minbox" ref="weather">
                 <!-- 时间 -->
-               <div id="boxTime" :class="boxTime">
-                   <span class="oneTime">{{hours}}:{{minute}}</span><br>
-                   <span class="oneDate">{{oneDate}}</span>
+               <div id="boxTime" class="boxTime">
+                   <img :src="imgSrc" alt="">
+                   <h1 class="oneTime">{{hours}}:{{minute}}</h1>
+                   <p class="oneDate">{{oneDate}}</p>
                </div>
                <!-- 搜索框 -->
                <div class="searchBox">
                     <form action="http://www.baidu.com/baidu" class="searchBox1">
                              <!-- 这条语句要有 -->
-                             <input name=tn type="hidden" value=baidu>
+                             <input name="word" type="hidden" value=baidu>
                              <!-- 最关键的是name的属性值设为word，百度搜索框才可生效 -->
                              <input type="text" target="_blank"  name="word" placeholder="请输入搜索内容......" ref="search">
                              <i class="el-icon-search"  name="word"></i>
@@ -36,13 +37,13 @@
                </div>
             </div>
             <!-- 链接 -->
-            <div class="link">
+            <!-- <div class="link">
                 <div class="linkBox" v-for="item in links" :key="item.id">
                     <a v-bind:href="item.link">
                         <img v-bind:src="item.imgsrc" alt="" width="100%">
                     </a>
                 </div>
-            </div>
+            </div> -->
   </div>
 </template>
 
@@ -51,7 +52,7 @@ export default {
     name:'index',
     data(){
         return{
-               hours:'',
+        hours:'',
         minute:'',
         oneDate:'',
         boxTime:'',
@@ -61,23 +62,27 @@ export default {
         fengxiang:'',
         ganmao:'',
         weatherType:'',
-        links:[
-            {id:'1',link:'https://www.csdn.net/',imgsrc:'./image/linkimg/csdn.png'},
-            {id:'2',link:'https://www.baidu.com/',imgsrc:'./image/linkimg/baidu.jpg'},
-            {id:'3',link:'https://element.eleme.cn/#/zh-CN/',imgsrc:'./image/linkimg/elementui.png'},
-            {id:'4',link:'https://cn.vuejs.org/index.html',imgsrc:'./image/linkimg/vue.jpg'},
-            {id:'5',link:'https://dev.dcloud.net.cn/mui/',imgsrc:'./image/linkimg/mui.jpg'},
-            {id:'6',link:'https://uniapp.dcloud.io/',imgsrc:'./image/linkimg/uni-app.jpg'},
-            {id:'7',link:'https://www.w3school.com.cn/cssref/css_selectors.asp',imgsrc:'./image/linkimg/uni-app.jpg'},
-        ]
+        imgSrc:''
+        // links:[
+        //     {id:'1',link:'https://www.csdn.net/',imgsrc:'./image/linkimg/csdn.png'},
+        //     {id:'2',link:'https://www.baidu.com/',imgsrc:'./image/linkimg/baidu.jpg'},
+        //     {id:'3',link:'https://element.eleme.cn/#/zh-CN/',imgsrc:'./image/linkimg/elementui.png'},
+        //     {id:'4',link:'https://cn.vuejs.org/index.html',imgsrc:'./image/linkimg/vue.jpg'},
+        //     {id:'5',link:'https://dev.dcloud.net.cn/mui/',imgsrc:'./image/linkimg/mui.jpg'},
+        //     {id:'6',link:'https://uniapp.dcloud.io/',imgsrc:'./image/linkimg/uni-app.jpg'},
+        //     {id:'7',link:'https://www.w3school.com.cn/cssref/css_selectors.asp',imgsrc:'./image/linkimg/uni-app.jpg'},
+        // ]
         }
     },
     mounted(){
-        setInterval(this.onTime,10);
-        setInterval(this.onDate,10);
-        this.pdTime();
+       /*  setInterval(this.onTime,10);
+        setInterval(this.onDate,10); */
+        // this.pdTime();
     },
     created(){
+        setInterval(this.onTime,1000);
+        setInterval(this.onDate,1000);
+        // setInterval(this.pdTime,1000);
         this.getWeather();
     },
     methods:{
@@ -103,17 +108,18 @@ export default {
             var pdTime=new Date();
             var hours=pdTime.getHours();
             if(hours>=6 && hours<17){
-               this.boxTime='boxTime';
+               this.this.imgSrc = require('../assets/image/03sun.png');
                 console.log('现在是白天');
             }else{
-                this.boxTime='boxTime1';
+                this.this.imgSrc = require('../assets/image/003月亮.png');
                 console.log('现在是晚上');
             }
 
         },
         // 天气
         getWeather() {
-            this.axios.get('http://wthrcdn.etouch.cn/weather_mini?city=崇左').then(res=>{
+            // 请求天气数据
+            this.$axios.get('http://wthrcdn.etouch.cn/weather_mini?city=崇左').then(res=>{
             var weathers = res.data.data.forecast[0];
             this.city = res.data.data.city;
             this.date = weathers.date;
@@ -122,14 +128,14 @@ export default {
             this.fengxiang = weathers.fengxiang;
             this.ganmao = res.data.data.ganmao;
             this.weatherType =  weathers.type;
-            console.log(res.data);
+          /*   console.log(res.data);
             if(this.weatherType == '晴'){
                 this.$refs.weather.style.backgroundImage = "url(./assets/image/weather/qing.jpg)";
             }else if(this.weatherType == '多云' || this.weatherType == '阴' || this.weatherType == '霾'){
                 this.$refs.weather.style.backgroundImage = "url(./assets/image/weather/ying1.jpg)";
             }else if(this.weatherType == '雨'){
                 this.$refs.weather.style.backgroundImage = "url(./assets/image/weather/yu.jpg)"
-            }
+            } */
 }).catch(reject=>{
     console.log(reject);
 })
@@ -153,84 +159,40 @@ export default {
     border-radius: 30px;
     margin: 0 auto;
     margin-top: 40px;
-    /* background: url(../image/weather/qing.jpg); */
-   background-repeat: no-repeat; 
-    /*contain 把背景图片扩展至最大尺寸，
-    使背景图片宽度和高度完全适应背景区域
-    cover  把背景图片扩展至足够大，
-    使背景图片完全覆盖背景区域，会出现背景图
-    片某些部分也许无法呈现在
-   定位区域中 */
-   background-size: cover;
-   /*  */
-   background-position: center;
-   position: relative;
+    overflow: hidden;
+   /* position: relative; */
+   background-color: #a3aaba;
 }
 .boxTime{
-    margin: 20px auto;
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    background: url(../assets/image/03sun.png) no-repeat;
-    background-position: center;
-    background-size: contain;
-    color: rgba(109, 107, 107, 0.63);
-    display: flex;
-    justify-items: center;
-    align-items: center;
-}
-.boxTime1{
-    top: 18px;
+     background-color: aqua;
+    border: 2px solid greenyellow;
     margin: 0 auto;
+    margin-top: 20px;
     width: 250px;
     height: 250px;
     border-radius: 50%;
-    position: absolute;
-    background: url(../assets/image/003月亮.png) no-repeat;
-    background-position: center;
-    background-size: contain;
-    color: white;
-    display: flex;
-    justify-items: center;
-    align-items: center;
+    color: rgba(109, 107, 107, 0.63);
+   text-align: center;
+   /* vertical-align: middle; */
 }
-.boxTime span{
-    display: block;
+.boxTime h1{
+    padding-top: 70px;
+    /* padding: 0 50px; */
 }
-/* 时间 */
-.boxTime1>.oneTime{
-    font-size: 64px;
- 
-}
-/* 日期 */
-.boxTime1>.oneDate{
-   
-}
-/* 时间 */
-.boxTime>.oneTime{
-   
-    font-size: 64px;
- 
-}
-/* 日期 */
-.boxTime>.oneDate{
-   
-}
+
 /* 搜索框 */
 .searchBox{
     display: flex; 
     justify-content: center;
     align-items: center;
-    /* min-height: 100vh; */
     position: relative;
-    top: 12%;
+    top: 9%;
 }
 .searchBox1{
    width: 65px;
    height: 50px;
    position: relative;
    margin: 0 auto;
-   /* left: 95px; */
    display: flex; 
    justify-content: center;
    align-items: center;
