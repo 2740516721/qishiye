@@ -122,6 +122,10 @@ export default {
             objdata.id = this.links.length+1;
             objdata.link = this.netSrc;
             objdata.name = this.name;
+            if(objdata.id==''||objdata.link==''||objdata.name==''||objdata.firstName==''){
+                alert("请填入完整数据！");
+                return
+            }
             objdata.firstName = this.name.slice(0,1);
             this.links.push(objdata);
             console.log(this.links);
