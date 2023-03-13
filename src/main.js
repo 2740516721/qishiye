@@ -5,6 +5,8 @@ import store from './store'
 import axios from 'axios'
 import EelementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import './assets/fontawesome-free-6.3.0-web/css/all.css'
+import './assets/icon-font/iconfont.css'
 
 Vue.config.productionTip = false
 
